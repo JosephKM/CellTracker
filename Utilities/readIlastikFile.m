@@ -9,7 +9,7 @@ function mask = readIlastikFile(filename,complement)
 % see function 'readIlastikFileNucMem.m'
 
 if ~exist('complement','var')
-    complement = 1;
+    complement = 0;
 end
 
 immask = h5read(filename, '/exported_data');
