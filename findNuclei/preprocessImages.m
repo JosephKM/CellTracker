@@ -26,8 +26,10 @@ else
 end
 
 if isfield(userParam,'providedBackground') && userParam.providedBackground
+    tt = 2;
     for xx=1:nImages
-        fimg(:,:,xx)=presubBackground_provided(fimg(:,:,xx),2);
+        fimg(:,:,xx)=presubBackground_provided(fimg(:,:,xx),tt);
+        tt=tt+1;
     end
     
     

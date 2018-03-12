@@ -13,10 +13,14 @@ for iCon = 1:analysisParam.nCon;
 timepointCellRatios{iCon}=singleCells{iCon}{timepoint}(:,6)./singleCells{iCon}{timepoint}(:,5);
 end
 figure; clf; hold on;
-nhist(timepointCellRatios,'numbers','noerror');
-legend(analysisParam.conNames,'Location','eastoutside');
+for ii = 1:analysisParam.nCon;
+    subplot(2,4,ii);
+    
+nhist(timepointCellRatios{ii},'numbers','noerror');
+%legend(analysisParam.conNames,'Location','eastoutside');
 xlabel([analysisParam.yMolecule ' : ' analysisParam.yNuc]);
 ylabel('# of cells');
-title(['distribution at ' int2str(hourPostLigand) ' hours (post ligand)']);
-
+title(['distribution at ' int2str(hourPostLigand) ' hours ' analysisParam.conNames{ii}]);
+end
+savefig(['figures/hist ' int2str(hourPostLigand) ' hours']);
 end

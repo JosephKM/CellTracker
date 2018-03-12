@@ -14,7 +14,7 @@ imglist = dir(fullfile(direc, ['*' extension]));
 parfor ii = 1:length(imglist)
     file = [direc filesep imglist(ii).name];
     [~,name,~] = fileparts(file);
-mkMaxIntensity(file,[outputDirec filesep 'MAX' name '.tif'])
+mkMaxIntensity4chan(file,[outputDirec filesep 'MAX' name '.ome.tif'])
 disp(['MaxIntensity' filesep 'MAX' imglist(ii).name ' complete']);
  end
 disp('All Projections complete');

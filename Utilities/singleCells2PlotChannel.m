@@ -1,4 +1,4 @@
-function [ output_args ] = singleCells2Plots( singleCells,filterHigh )
+function [ output_args ] = singleCells2PlotChannel( singleCells,channel,filterHigh )
 %singleCells2Plots generates a few plots to quickly look at singleCells
 %dataset
 %   
@@ -11,7 +11,7 @@ colors = distinguishable_colors(analysisParam.nCon);
 
 for iCon = 1:analysisParam.nCon;
     for iTime = find(~cellfun('isempty', singleCells{iCon}))
-        R = singleCells{iCon}{iTime}(:,6)./singleCells{iCon}{iTime}(:,5);
+        R = singleCells{iCon}{iTime}(:,channel);
         
     nuc2nucMeans(iCon,iTime) = meannonan(R(R<filterHigh)); % find means of ratios less than filterHigh
     nuc2nucStd(iCon,iTime) = stdnonan(R(R<filterHigh)); % 
@@ -23,11 +23,11 @@ figure; clf; hold on;
 for iCon = 1:analysisParam.nCon;
 plot(analysisParam.plotX(1:size(nuc2nucMeans,2)),nuc2nucMeans(iCon,:),'Color',colors(iCon,:),'LineWidth',2);
 end
-legend(analysisParam.conNames,'Location','best');
+legend(analysisParam.conNames,'Location','bestoutside');
 xlabel(['hours after ' analysisParam.ligandName ' added']);
-ylabel([analysisParam.yMolecule ' : ' analysisParam.yNuc]);
-title('mean signaling');
-
+ylabel(['nuclear GFP']);
+title('signaling');
+savefig('figures/Gfp.fig');
 % plot mean with cell STD
 % figure; clf; hold on;
 % for iCon = 1:analysisParam.nCon;
@@ -39,14 +39,14 @@ title('mean signaling');
 % title('mean signaling w/ cell std');
 
 % plot # of cells in each mean
-figure; clf; hold on;
-for iCon = 1:analysisParam.nCon;
-plot(analysisParam.plotX(1:size(nuc2nucMeans,2)),nCells(iCon,:),'Color',colors(iCon,:),'LineWidth',2);
-end
-legend(analysisParam.conNames,'Location','eastoutside');
-xlabel(['hours after ' analysisParam.ligandName ' added']);
-ylabel('# of cells');
-title('detected cells');
+% figure; clf; hold on;
+% for iCon = 1:analysisParam.nCon;
+% plot(analysisParam.plotX(1:size(nuc2nucMeans,2)),nCells(iCon,:),'Color',colors(iCon,:),'LineWidth',2);
+% end
+% legend(analysisParam.conNames,'Location','eastoutside');
+% xlabel(['hours after ' analysisParam.ligandName ' added']);
+% ylabel('# of cells');
+% title('detected cells');
 
 end
 

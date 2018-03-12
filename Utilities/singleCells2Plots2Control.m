@@ -1,4 +1,4 @@
-function [ output_args ] = singleCells2Plots( singleCells,filterHigh )
+function [ output_args ] = singleCells2Plots2Control( singleCells,controlCondition,filterHigh )
 %singleCells2Plots generates a few plots to quickly look at singleCells
 %dataset
 %   
@@ -18,10 +18,14 @@ for iCon = 1:analysisParam.nCon;
     nCells(iCon,iTime) = size(R(R<filterHigh),1);
     end
 end
+% smooth control for use in normalizing
+control = nuc2nucMeans(controlCondition,:)
+control = medfilt1(control,13);
+
 % plot nuc2nucMeans
 figure; clf; hold on;
 for iCon = 1:analysisParam.nCon;
-plot(analysisParam.plotX(1:size(nuc2nucMeans,2)),nuc2nucMeans(iCon,:),'Color',colors(iCon,:),'LineWidth',2);
+plot(analysisParam.plotX(1:size(nuc2nucMeans,2)),nuc2nucMeans(iCon,:)./control,'Color',colors(iCon,:),'LineWidth',2);
 end
 legend(analysisParam.conNames,'Location','best');
 xlabel(['hours after ' analysisParam.ligandName ' added']);

@@ -12,7 +12,7 @@ if nucOrSmad == 1;
     
     
 elseif nucOrSmad == 2;
-    bg_fimg = imread('bg_fimg1.tif');
+    bg_fimg = imread(['bg_fimg' int2str(nucOrSmad-1) '.tif']);
     bg_fimg = smoothImage(bg_fimg,userParam.backgroundSmoothRad,userParam.backgroundSmoothSig);
     img=imsubtract(img,bg_fimg);
 end

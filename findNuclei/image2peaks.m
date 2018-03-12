@@ -22,7 +22,8 @@ if ~isfield(userParam,'errorStr')
     userParam.errorStr=[];
 end
 
-[red, gr] =preprocessImages(red,gr);
+%[red, gr] =preprocessImages(red,gr); moved outside of image2peaks. jkm
+%           2/22/18
 
 if ~exist('maskN','var')
     [maskN, statsN]=getNuclearMaskNoIlastik(red);

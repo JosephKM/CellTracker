@@ -6,6 +6,7 @@ function [ allPeaks ] = getAllPeaks
 global analysisParam;
 
 allPeaks = cell(size(analysisParam.positionConditions,1),size(analysisParam.positionConditions,2));
+%% for most fixed cell imaging
 if isfield(analysisParam,'outDirecStyle') && analysisParam.outDirecStyle == 2
     
     
@@ -18,7 +19,19 @@ if isfield(analysisParam,'outDirecStyle') && analysisParam.outDirecStyle == 2
         end
     end
 end   
-    
+
+%% for outdirectory containing series of outfiles which matlab reads in correct order
+if isfield(analysisParam,'outDirecStyle') && analysisParam.outDirecStyle == 3
+    allPeaks = allPeaks';
+    filenames = dir(fullfile(analysisParam.outDirec, ['*.mat'])); %get outfiles
+            for iFile = 1:length(filenames);
+                pp=load([analysisParam.outDirec filesep filenames(iFile).name]); 
+                allPeaks{iFile} =  pp.peaks;
+            end
+            allPeaks = allPeaks';
+end
+
+%% for most andor live imaging datasets
     
 if  analysisParam.outDirecStyle == 1 || ~isfield(analysisParam,'outDirecStyle')
  
@@ -31,6 +44,9 @@ end
 
 plotX = (0:length(allPeaks{1})-1)*analysisParam.nMinutesPerFrame./60;
 analysisParam.plotX = plotX-analysisParam.tLigandAdded;
+
 end
 %%
+i = find(cellfun(@isempty,allPeaks));
+allPeaks(i)= {nan(1,9)};
 end

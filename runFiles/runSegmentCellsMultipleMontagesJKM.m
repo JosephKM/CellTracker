@@ -1,4 +1,4 @@
-function runSegmentCellsMultipleMontagesJKM(direc,chan,paramfile,outfilePrefix)
+function runSegmentCellsMultipleMontagesJKM(direc,chan,paramfile,outfilePrefix,outfileDirec)
 % runSegmentCellsZstack_bfopen_splitByPos(direc,pos,chan,paramfile,outfile)
 %__________________________
 % Assumes files are split only by position and possible time but with several
@@ -16,7 +16,7 @@ function runSegmentCellsMultipleMontagesJKM(direc,chan,paramfile,outfilePrefix)
 % Output data is saved in the output file inside of a new outfiles directory in peaks variable
 
 tic;
-mkdir('outfiles');
+%mkdir('outfiles');
 
 
 global userParam;
@@ -28,26 +28,28 @@ catch
 end
 
 %main loop over imgfiles
-imgFiles = dir([direc filesep '*.tif']);
+imgFiles = dir([direc filesep '*.tif']); % this was recently edited from tif (edited 3/8/17 jkm)
     
+
 for iImgFiles = 1: length(imgFiles);
 disp(['Segmenting image ' int2str(iImgFiles) ' of ' int2str(length(imgFiles))]);
     filename = imgFiles(iImgFiles).name;
     
     
-    h5file = geth5name(filename);
-    
+    h5file = geth5name(filename); %use geth5name if .tif or .oib, use geth5nameOIF if .oif (edited 3/8/17 jkm)
+    %h5file = ['dapi-' h5file];
     
         usemask = 1;
         masks = readIlastikFile([direc filesep h5file]);
         if isfield(userParam,'maskDiskSize')
-        masks = imopen(masks,strel('disk',userParam.maskDiskSize));
+        masks2 = imopen(masks,strel('disk',userParam.maskDiskSize));
         end
     
     
         
          
         img = bfopen([direc filesep filename]);
+        [~,name,~] = fileparts(filename)
         nuc = img{1}{chan(1)};
         
         if length(chan) == 1
@@ -69,26 +71,26 @@ disp(['Segmenting image ' int2str(iImgFiles) ' of ' int2str(length(imgFiles))]);
         %run routines to segment cells, do stats, and get the output matrix
         try
                 
-                [outdat, ~, statsN] = image2peaks(nuc, fimg, masks);
+                [outdat, ~, statsN] = image2peaks(nuc, fimg, masks2);
             
         catch err
             disp(['Error with image ' int2str(iImgFiles) ' continuing...']);
             
             peaks=[];
             statsArray=[];
-            
-            
+            dateSegmentCells = clock;
+            save([outfileDirec filesep name '.mat'],'peaks','statsArray','userParam','dateSegmentCells');
             %rethrow(err);
             continue;
         end;
         peaks=outdat;
         statsN = rmfield(statsN,'VPixelIdxList');
     statsArray=statsN;
-    [~,name,~] = fileparts(filename)
+
          
   dateSegmentCells = clock;
-save(['outfiles' filesep outfilePrefix '_' name '.mat'],'peaks','statsArray','userParam','dateSegmentCells');
-disp(['outfiles' filesep outfilePrefix '_' name '.mat has been saved']);
+save([outfileDirec filesep name '.mat'],'peaks','statsArray','userParam','dateSegmentCells');
+disp(['outfiles' filesep name '.mat has been saved']);
 clear('nuc'); clear('fimg');
 toc;
 end

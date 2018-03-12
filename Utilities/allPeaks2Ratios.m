@@ -22,7 +22,7 @@ for iCon = 1:size(allPeaks,1)
         if size(allPeaks{iCon,iPos},2)==7
             fimgChannels = possibleFimgChannels(1); %this may be incorrect for peaks arrays generated on only a nuc and single fimg channel
         end
-        allChannelsRatios{iCon,iPos} = allPeaks{iCon,iPos}(:,possibleFimgChannels)./allPeaks{iCon,iPos}(:,[5 5 5]);
+        allChannelsRatios{iCon,iPos} = allPeaks{iCon,iPos}(:,fimgChannels)./allPeaks{iCon,iPos}(:,[5 5 5]);
         
     end
 end
