@@ -8,7 +8,7 @@ function [ output_args ] = mkMaxIntensities( direc,extension,outputDirec )
 % example:
 %   mkMaxIntensities(experiment,'.tif') results in a new 
 
-
+mkdir(outputDirec);
 
 imglist = dir(fullfile(direc, ['*' extension]));
 parfor ii = 1:length(imglist)

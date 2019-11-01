@@ -19,15 +19,27 @@ for iCon = 1:analysisParam.nCon;
     end
 end
 % plot nuc2nucMeans
-figure; clf; hold on;
+hold on;
 for iCon = 1:analysisParam.nCon;
-plot(analysisParam.plotX(1:size(nuc2nucMeans,2)),nuc2nucMeans(iCon,:),'Color',colors(iCon,:),'LineWidth',2);
+plot(analysisParam.plotX(1:size(nuc2nucMeans,2)),nuc2nucMeans(iCon,:),'Color',colors(iCon,:));
 end
-legend(analysisParam.conNames,'Location','bestoutside');
+%legend(analysisParam.conNames,'Location','best');
 xlabel(['hours after ' analysisParam.ligandName ' added']);
-ylabel(['nuclear GFP']);
-title('signaling');
-savefig('figures/Gfp.fig');
+x = analysisParam.plotX(1:size(nuc2nucMeans,2));
+xMin = x(1);
+xMax = x(length(x));
+xlim([xMin xMax]);
+if channel==5
+title([analysisParam.yNuc]);
+ylabel(['nuclear ' analysisParam.yNuc]);
+savefig([analysisParam.figDir filesep analysisParam.yNuc '.fig']);
+end
+if channel==6
+title([analysisParam.yMolecule]);
+ylabel(['nuclear ' analysisParam.yMolecule]);
+%savefig(['figures/' analysisParam.yMolecule '.fig']);
+end    
+
 % plot mean with cell STD
 % figure; clf; hold on;
 % for iCon = 1:analysisParam.nCon;

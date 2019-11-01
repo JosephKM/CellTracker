@@ -1,7 +1,8 @@
-function [ allPeaks ] = getAllPeaks
+function [ allPeaks plotX ] = getAllPeaks
 %getAllPeaks reads peaks array in outfiles from a directory defined in analysisParam 
-%            into allPeaks, an mxn cell where m is positions and n is conditions
-%   
+%            into allPeaks, an mxn cell where m is conditoins and n is positions
+%   %% TO DO: line 8 should be based on different parameters. need to standardize allPeaks dims.
+%   Probably get rid of other ways of reading data.
 %%
 global analysisParam;
 
@@ -36,17 +37,23 @@ end
 if  analysisParam.outDirecStyle == 1 || ~isfield(analysisParam,'outDirecStyle')
  
 for iPos = 0:analysisParam.nPos-1;
-   load([analysisParam.outDirec filesep 'pos' int2str(analysisParam.positionConditions(iPos+1)) '.mat'],'peaks');
+   load([analysisParam.outDirec filesep 'pos' int2str(analysisParam.positionConditions(iPos+1)) '.mat'],'peaks')
+   if length(peaks) >1; 
+   peaks(length(peaks)) = [];
+   end
    allPeaks{iPos+1} = peaks;
     clear('peaks');
     
 end
 
 plotX = (0:length(allPeaks{1})-1)*analysisParam.nMinutesPerFrame./60;
-analysisParam.plotX = plotX-analysisParam.tLigandAdded;
+plotX = plotX-analysisParam.tLigandAdded;
+analysisParam.plotX = plotX;
+
 
 end
 %%
 i = find(cellfun(@isempty,allPeaks));
 allPeaks(i)= {nan(1,9)};
+save('allPeaks.mat','allPeaks','plotX');
 end

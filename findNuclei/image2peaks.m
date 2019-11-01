@@ -30,7 +30,7 @@ if ~exist('maskN','var')
 else
     maskN = imfill(maskN,'holes');
     maskN = bwareafilt(maskN,[userParam.nucAreaLo, userParam.nucAreaHi]);
-    statsN =ilastikMaskToStats(maskN);
+    statsN =ilastikMaskToStats(maskN); %obtains nuc centroids and pixel indices
 end
 
 if doCyto == 1
@@ -45,7 +45,7 @@ if doCyto == 1
     
     nImages = size(gr,3);
     for ii=1:nImages
-        [maskC(:,:,ii), statsN] = edgeThreshCyto(gr(:,:,ii), statsN, maskN,ii);
+        [maskC(:,:,ii), statsN] = edgeThreshCyto(gr(:,:,ii), statsN, maskN,ii); %finds background intensities to subtract from cyto, not really needed if background was previously subtracted from red and green image
     end
     
     %cyto mask is 1 if included in any of the individual masks

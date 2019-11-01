@@ -51,15 +51,15 @@ nimg = 1;
 %main loop over frames
 for ii=1:ntimefiles
     
-    tic;
+   % tic;
     
     filename = getAndorFileName(ff,pos,ii-1,[],[]);
     reader = bfGetReader(filename);
     
     nT = reader.getSizeT;
     
-    h5file = geth5name(filename);
-    
+    h5file = geth5name(filename); 
+   % h5file = geth5nameMask3(filename); %ilastik update defaults to prefix "mask3" 3/13/18 jkm
     if exist(h5file,'file')
         usemask = 1;
         [masks memMasks] = readIlastikFileNucMem(h5file);
@@ -84,7 +84,7 @@ for ii=1:ntimefiles
         end
         end
         
-        disp(['frame ' int2str(nimg)]);
+        disp(['frame ' int2str(nimg) ' of file: ' filename]);
         % setup string to hold all the error messages for this frame number
         userParam.errorStr = sprintf('frame= %d\n', nimg);
         
@@ -107,13 +107,16 @@ for ii=1:ntimefiles
                 if max(max(masks(:,:,jj))) == 0
                     disp('Empty mask. Continuing...');
                     peaks{nimg}=[];
+                    membrane(nimg) = nan;
                     statsArray{nimg}=[];
                     nimg = nimg + 1;
 
                     continue;
                 end
                 disp(['Using ilastik mask frame ' int2str(jj)]);
-                [outdat, ~, statsN] = image2peaks(nuc2, fimg2, masks(:,:,jj));
+                msk = masks(:,:,jj);
+                msk = imerode(msk,strel('disk',floor(.8*(userParam.maskDiskSize)))); %optionally erode mask
+                [outdat, ~, statsN] = image2peaks(nuc2, fimg2, msk);
                 
                 mem = segmentMembrane(fimg2, memMasks(:,:,jj)); 
                 
@@ -147,8 +150,8 @@ for ii=1:ntimefiles
         %This prevents the resulting mat files from becoming too large.
         statsN = rmfield(statsN,'VPixelIdxList');
         statsArray{ii}=statsN;
-        nimg = nimg + 1;
-        toc;
+        nimg = nimg + 1; %counts up for frames (time)
+        %toc;
     end
 end
 

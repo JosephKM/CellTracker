@@ -26,7 +26,7 @@ nuc_area  = [statsN.NuclearArea];
 nuc_marker_avr = zeros(ncells, 1);
 for i = 1:ncells
     data = imgR(statsN(i).PixelIdxList);
-    nuc_marker_avr = round(mean(data) );
+    nuc_marker_avr = round(mean(data) ); %find nuclear red pixel means
     datacell=[xy(i,1) xy(i,2) nuc_area(i) -1 nuc_marker_avr];
     for xx=1:nImages
         if userParam.donutRadiusMax > 0

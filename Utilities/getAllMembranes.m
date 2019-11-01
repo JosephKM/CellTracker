@@ -1,4 +1,4 @@
-function [ allMembranes ] = getAllMembranes
+function [ allMembranes ] = getAllMembranes(norm2preTreat)
 %getAllPeaks reads peaks array in outfiles from a directory defined in analysisParam 
 %            into allPeaks, an mxn cell where m is positions and n is conditions
 %   
@@ -21,8 +21,13 @@ if  analysisParam.outDirecStyle == 1 || ~isfield(analysisParam,'outDirecStyle')
 for iPos = 0:analysisParam.nPos-1;
    file = dir([analysisParam.outMembraneDirec filesep '*pos' int2str(analysisParam.positionConditions(iPos+1)) '.mat']);
     load([analysisParam.outMembraneDirec filesep file.name],'membrane');
+    if norm2preTreat==1
     normalizer = mean(membrane(:,preLigand),2);
    allMembranes{iPos+1} = membrane ./ normalizer;
+    else
+        allMembranes{iPos+1} = membrane;
+    end
+    
     clear('membrane');
     
 end

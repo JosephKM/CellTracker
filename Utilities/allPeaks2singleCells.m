@@ -1,7 +1,7 @@
 function [ singleCells ] = allPeaks2singleCells( allPeaks )
 %allPeaks2singleCells reformats allPeaks so that it is position agnostic
-%   
-% 
+%   TO DO: dims of singleCells should be based on size of allPeaks, and not analysisParam.
+%          better to use cellfun instead of the loop as written
 global analysisParam;
 
 if  analysisParam.isAndorMovie    
@@ -35,5 +35,5 @@ if analysisParam.isFixedCells
     end
 end 
 singleCells = singleCells';
-end
 
+end
